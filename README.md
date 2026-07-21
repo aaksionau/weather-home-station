@@ -73,16 +73,25 @@ cross-cutting reader.
 
 ## Current Status
 
-Only two pieces of this diagram exist today (see `src/` and
+Three pieces of this diagram exist today (see `src/` and
 `docker-compose.yml`):
 
 - **WeatherGateway.API** — accepts readings, publishes to `weather.raw`.
 - **WeatherProcessor.Worker** — consumes `weather.raw`, enriches, writes
   raw readings to **PostgreSQL**, and publishes to `weather.processed`.
+- **WeatherRules.Worker** (Rules Engine Worker) — consumes
+  `weather.processed`, evaluates threshold rules via
+  [microsoft/RulesEngine](https://github.com/microsoft/RulesEngine), owns
+  the `alerts` table in **PostgreSQL**, and publishes to `weather.alerts`.
+  Rule definitions are JSON workflows stored in **Azure Blob Storage**
+  (Azurite locally) rather than in code, so thresholds can change without
+  a redeploy; a default rule set is seeded into the blob container on
+  first run if none exists. It does not yet consume `weather.forecast`
+  (Predictions Worker doesn't exist yet).
 
-Dashboard.API, Rules Engine Worker, Predictions Worker, and the
-Notification Worker are not built yet — the diagram above is the target
-design, not the current state.
+Dashboard.API, Predictions Worker, and the Notification Worker are not
+built yet — the diagram above is the target design, not the current
+state.
 
 ### Note: current enrichment is not enough for real prediction
 
