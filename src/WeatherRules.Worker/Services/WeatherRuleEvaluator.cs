@@ -1,6 +1,7 @@
 using System.Text.Json;
 using RulesEngine.Models;
-using Weather.Contracts;
+using Weather.Contracts.Enums;
+using Weather.Contracts.Types;
 using WeatherRules.Worker.Models;
 
 namespace WeatherRules.Worker.Services;

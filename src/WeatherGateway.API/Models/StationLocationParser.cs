@@ -1,4 +1,4 @@
-using Weather.Contracts;
+using Weather.Contracts.Enums;
 
 namespace WeatherGateway.API.Models;
 

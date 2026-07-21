@@ -1,7 +1,9 @@
 using System.Text.Json;
 using Confluent.Kafka;
 using Microsoft.Extensions.Options;
-using Weather.Contracts;
+using Weather.Contracts.Enums;
+using Weather.Contracts.Kafka;
+using Weather.Contracts.Types;
 using WeatherGateway.API.Kafka;
 using WeatherGateway.API.Metrics;
 using WeatherGateway.API.Models;
@@ -20,11 +22,7 @@ public class WeatherEventPublisher : IWeatherEventPublisher, IDisposable
         _topic = kafkaOptions.WeatherReadingsTopic;
         _logger = logger;
 
-        var config = new ProducerConfig
-        {
-            BootstrapServers = kafkaOptions.BootstrapServers
-        };
-        _producer = new ProducerBuilder<string, string>(config).Build();
+        _producer = KafkaClientFactory.CreateProducer(kafkaOptions.BootstrapServers);
     }
 
     public async Task PublishAsync(WeatherReading reading, StationLocation location, string correlationId, CancellationToken cancellationToken = default)

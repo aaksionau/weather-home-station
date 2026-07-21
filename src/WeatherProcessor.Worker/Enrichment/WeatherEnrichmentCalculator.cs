@@ -1,4 +1,4 @@
-using Weather.Contracts;
+using Weather.Contracts.Types;
 
 namespace WeatherProcessor.Worker.Enrichment;
 

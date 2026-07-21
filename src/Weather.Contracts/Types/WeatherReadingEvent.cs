@@ -1,4 +1,6 @@
-namespace Weather.Contracts;
+using Weather.Contracts.Enums;
+
+namespace Weather.Contracts.Types;
 
 public record WeatherReadingEvent(
     string StationId,
