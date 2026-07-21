@@ -73,7 +73,7 @@ cross-cutting reader.
 
 ## Current Status
 
-Three pieces of this diagram exist today (see `src/` and
+Four pieces of this diagram exist today (see `src/` and
 `docker-compose.yml`):
 
 - **WeatherGateway.API** — accepts readings, publishes to `weather.raw`.
@@ -88,10 +88,14 @@ Three pieces of this diagram exist today (see `src/` and
   a redeploy; a default rule set is seeded into the blob container on
   first run if none exists. It does not yet consume `weather.forecast`
   (Predictions Worker doesn't exist yet).
+- **Dashboard.API** — read-only API over `readings` and `alerts` in
+  **PostgreSQL** (`GET /api/readings`, `GET /api/readings/{stationId}/latest`,
+  `GET /api/alerts`). No Kafka dependency and no writes, per the target
+  design. Doesn't read `forecasts` yet (Predictions Worker doesn't exist
+  yet, so that table doesn't either).
 
-Dashboard.API, Predictions Worker, and the Notification Worker are not
-built yet — the diagram above is the target design, not the current
-state.
+Predictions Worker and the Notification Worker are not built yet — the
+diagram above is the target design, not the current state.
 
 ### Note: current enrichment is not enough for real prediction
 
