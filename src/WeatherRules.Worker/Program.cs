@@ -1,5 +1,6 @@
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
+using Weather.Contracts.Configuration;
 using WeatherRules.Worker.Configuration;
 using WeatherRules.Worker.Metrics;
 using WeatherRules.Worker.Persistence;

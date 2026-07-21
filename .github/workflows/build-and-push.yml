@@ -20,7 +20,7 @@ jobs:
           - { name: weather-gateway-api, context: ., dockerfile: src/WeatherGateway.API/Dockerfile }
           - { name: weather-processor-worker, context: ., dockerfile: src/WeatherProcessor.Worker/Dockerfile }
           - { name: weather-rules-worker, context: ., dockerfile: src/WeatherRules.Worker/Dockerfile }
-          - { name: dashboard-api, context: src/Dashboard.API, dockerfile: src/Dashboard.API/Dockerfile }
+          - { name: dashboard-api, context: ., dockerfile: src/Dashboard.API/Dockerfile }
           - { name: dashboard-web, context: src/Dashboard.Web, dockerfile: src/Dashboard.Web/Dockerfile }
     steps:
       - uses: actions/checkout@v4

@@ -1,8 +1,8 @@
 using Dapper;
-using Dashboard.API.Configuration;
 using Dashboard.API.Models;
 using Microsoft.Extensions.Options;
 using Npgsql;
+using Weather.Contracts.Configuration;
 
 namespace Dashboard.API.Persistence;
 

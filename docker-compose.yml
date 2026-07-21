@@ -124,7 +124,8 @@ services:
 
   dashboard-api:
     build:
-      context: ./src/Dashboard.API
+      context: .
+      dockerfile: src/Dashboard.API/Dockerfile
     container_name: weather-dashboard-api
     restart: unless-stopped
     ports:

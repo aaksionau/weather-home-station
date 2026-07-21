@@ -1,5 +1,6 @@
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
+using Weather.Contracts.Configuration;
 using WeatherProcessor.Worker.Configuration;
 using WeatherProcessor.Worker.Enrichment;
 using WeatherProcessor.Worker.Metrics;

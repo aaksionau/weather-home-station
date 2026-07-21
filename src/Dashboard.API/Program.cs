@@ -1,9 +1,9 @@
 using Dapper;
-using Dashboard.API.Configuration;
 using Dashboard.API.Helpers;
 using Dashboard.API.Persistence;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
+using Weather.Contracts.Configuration;
 
 SqlMapper.AddTypeHandler(new DateTimeOffsetTypeHandler());
 
