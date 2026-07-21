@@ -1,5 +1,5 @@
-using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
+using Weather.Shared;
 using WeatherGateway.API.Configuration;
 using WeatherGateway.API.Metrics;
 using WeatherGateway.API.Models;
@@ -17,25 +17,15 @@ builder.Services
     .ValidateOnStart();
 builder.Services.AddSingleton<IWeatherEventPublisher, WeatherEventPublisher>();
 
-builder.Logging.AddOpenTelemetry(logging =>
-{
-    logging.IncludeFormattedMessage = true;
-    logging.IncludeScopes = true;
-    logging.AddOtlpExporter();
-});
-
-builder.Services.AddOpenTelemetry()
-    .WithMetrics(metrics => metrics
-        .AddAspNetCoreInstrumentation()
-        .AddRuntimeInstrumentation()
-        .AddMeter(WeatherGatewayMetrics.MeterName)
-        .AddView(
-            instrumentName: "http.server.request.duration",
-            new ExplicitBucketHistogramConfiguration
-            {
-                Boundaries = [0.005, 0.01, 0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1, 2.5, 5, 7.5, 10]
-            })
-        .AddOtlpExporter());
+builder.AddWeatherObservability(metrics => metrics
+    .AddAspNetCoreInstrumentation()
+    .AddMeter(WeatherGatewayMetrics.MeterName)
+    .AddView(
+        instrumentName: "http.server.request.duration",
+        new ExplicitBucketHistogramConfiguration
+        {
+            Boundaries = [0.005, 0.01, 0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1, 2.5, 5, 7.5, 10]
+        }));
 
 var app = builder.Build();
 
