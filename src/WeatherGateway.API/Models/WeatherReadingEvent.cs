@@ -1,6 +1,6 @@
-namespace WeatherProcessor.Worker.Models;
+namespace WeatherGateway.API.Models;
 
-public record WeatherReading(
+public record WeatherReadingEvent(
     string StationId,
     StationLocation Location,
     double Temperature,

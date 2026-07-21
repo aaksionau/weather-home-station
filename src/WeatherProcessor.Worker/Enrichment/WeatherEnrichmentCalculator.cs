@@ -15,6 +15,7 @@ public class WeatherEnrichmentCalculator
 
         return new EnrichedWeatherReading(
             reading.StationId,
+            reading.Location,
             reading.Temperature,
             reading.Humidity,
             reading.Pressure,

@@ -61,6 +61,15 @@ app.MapGet("/api/readings", async (
 })
 .WithName("GetReadings");
 
+app.MapGet("/api/readings/latest", async (
+    WeatherReadingRepository repository,
+    CancellationToken cancellationToken) =>
+{
+    var readings = await repository.GetLatestPerStationAsync(cancellationToken);
+    return Results.Ok(readings);
+})
+.WithName("GetLatestReadingsPerStation");
+
 app.MapGet("/api/readings/{stationId}/latest", async (
     string stationId,
     WeatherReadingRepository repository,

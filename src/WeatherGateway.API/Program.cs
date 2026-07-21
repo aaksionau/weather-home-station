@@ -61,15 +61,21 @@ app.MapPost("/api/weather-readings", async (
     ILogger<Program> logger,
     CancellationToken cancellationToken) =>
 {
+    if (!StationLocationParser.TryParse(reading.StationId, out var location))
+    {
+        return Results.BadRequest(
+            $"Station id '{reading.StationId}' does not start with a recognized location ('inside' or 'outside').");
+    }
+
     var correlationId = Guid.NewGuid().ToString();
 
     logger.LogInformation(
-        "Received weather reading from station {StationId} at {Timestamp}, correlation {CorrelationId}",
-        reading.StationId, reading.Timestamp, correlationId);
+        "Received weather reading from station {StationId} ({Location}) at {Timestamp}, correlation {CorrelationId}",
+        reading.StationId, location, reading.Timestamp, correlationId);
 
     try
     {
-        await publisher.PublishAsync(reading, correlationId, cancellationToken);
+        await publisher.PublishAsync(reading, location, correlationId, cancellationToken);
     }
     catch (Exception ex)
     {

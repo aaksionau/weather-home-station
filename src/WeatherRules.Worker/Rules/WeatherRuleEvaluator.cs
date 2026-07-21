@@ -13,7 +13,8 @@ public class WeatherRuleEvaluator
 
     public WeatherRuleEvaluator(List<Workflow> workflows)
     {
-        _engine = new RulesEngine.RulesEngine(workflows.ToArray(), null);
+        var reSettings = new ReSettings { CustomTypes = [typeof(StationLocation)] };
+        _engine = new RulesEngine.RulesEngine(workflows.ToArray(), reSettings);
     }
 
     public async Task<IReadOnlyList<Alert>> EvaluateAsync(EnrichedWeatherReading reading, CancellationToken cancellationToken)

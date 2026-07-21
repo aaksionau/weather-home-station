@@ -3,9 +3,9 @@
     "WorkflowName": "WeatherAlertRules",
     "Rules": [
       {
-        "RuleName": "HighTemperatureAlert",
+        "RuleName": "HighTemperatureAlertOutside",
         "RuleExpressionType": "LambdaExpression",
-        "Expression": "reading.Temperature >= 90",
+        "Expression": "reading.Location == StationLocation.Outside && reading.Temperature >= 90",
         "ErrorMessage": "Temperature is at or above 90F.",
         "SuccessEvent": "HighTemperature",
         "Properties": {
@@ -13,9 +13,19 @@
         }
       },
       {
-        "RuleName": "FreezingTemperatureAlert",
+        "RuleName": "HighTemperatureAlertInside",
         "RuleExpressionType": "LambdaExpression",
-        "Expression": "reading.Temperature <= 32",
+        "Expression": "reading.Location == StationLocation.Inside && reading.Temperature >= 76",
+        "ErrorMessage": "Temperature is at or above 76F.",
+        "SuccessEvent": "HighTemperature",
+        "Properties": {
+          "Severity": "Warning"
+        }
+      },
+      {
+        "RuleName": "FreezingTemperatureAlertOutside",
+        "RuleExpressionType": "LambdaExpression",
+        "Expression": "reading.Location == StationLocation.Outside && reading.Temperature <= 32",
         "ErrorMessage": "Temperature is at or below 32F (freezing).",
         "SuccessEvent": "FreezingTemperature",
         "Properties": {
@@ -23,9 +33,19 @@
         }
       },
       {
-        "RuleName": "HeatIndexDangerAlert",
+        "RuleName": "FreezingTemperatureAlertInside",
         "RuleExpressionType": "LambdaExpression",
-        "Expression": "reading.HeatIndex >= 103",
+        "Expression": "reading.Location == StationLocation.Inside && reading.Temperature <= 45",
+        "ErrorMessage": "Indoor temperature is at or below 45F, indicating possible heating failure or burst-pipe risk.",
+        "SuccessEvent": "FreezingTemperature",
+        "Properties": {
+          "Severity": "Critical"
+        }
+      },
+      {
+        "RuleName": "HeatIndexDangerAlertOutside",
+        "RuleExpressionType": "LambdaExpression",
+        "Expression": "reading.Location == StationLocation.Outside && reading.HeatIndex >= 103",
         "ErrorMessage": "Heat index is at or above 103F (NWS danger threshold).",
         "SuccessEvent": "HeatIndexDanger",
         "Properties": {
@@ -33,13 +53,33 @@
         }
       },
       {
-        "RuleName": "HighHumidityAlert",
+        "RuleName": "HeatIndexDangerAlertInside",
         "RuleExpressionType": "LambdaExpression",
-        "Expression": "reading.Humidity >= 90",
+        "Expression": "reading.Location == StationLocation.Inside && reading.HeatIndex >= 90",
+        "ErrorMessage": "Indoor heat index is at or above 90F, indicating possible AC failure.",
+        "SuccessEvent": "HeatIndexDanger",
+        "Properties": {
+          "Severity": "Critical"
+        }
+      },
+      {
+        "RuleName": "HighHumidityAlertOutside",
+        "RuleExpressionType": "LambdaExpression",
+        "Expression": "reading.Location == StationLocation.Outside && reading.Humidity >= 90",
         "ErrorMessage": "Relative humidity is at or above 90%.",
         "SuccessEvent": "HighHumidity",
         "Properties": {
           "Severity": "Info"
+        }
+      },
+      {
+        "RuleName": "HighHumidityAlertInside",
+        "RuleExpressionType": "LambdaExpression",
+        "Expression": "reading.Location == StationLocation.Inside && reading.Humidity >= 60",
+        "ErrorMessage": "Indoor relative humidity is at or above 60%, indicating a mold/moisture risk.",
+        "SuccessEvent": "HighHumidity",
+        "Properties": {
+          "Severity": "Warning"
         }
       },
       {

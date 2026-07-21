@@ -26,12 +26,15 @@ public class WeatherEventPublisher : IWeatherEventPublisher, IDisposable
         _producer = new ProducerBuilder<string, string>(config).Build();
     }
 
-    public async Task PublishAsync(WeatherReading reading, string correlationId, CancellationToken cancellationToken = default)
+    public async Task PublishAsync(WeatherReading reading, StationLocation location, string correlationId, CancellationToken cancellationToken = default)
     {
+        var readingEvent = new WeatherReadingEvent(
+            reading.StationId, location, reading.Temperature, reading.Humidity, reading.Pressure, reading.Timestamp);
+
         var message = new Message<string, string>
         {
             Key = reading.StationId,
-            Value = JsonSerializer.Serialize(reading),
+            Value = JsonSerializer.Serialize(readingEvent),
             Headers = new Headers()
         };
         CorrelationIdHeader.Set(message.Headers, correlationId);

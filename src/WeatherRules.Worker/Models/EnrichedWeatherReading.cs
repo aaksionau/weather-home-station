@@ -2,6 +2,7 @@ namespace WeatherRules.Worker.Models;
 
 public record EnrichedWeatherReading(
     string StationId,
+    StationLocation Location,
     double Temperature,
     double Humidity,
     double Pressure,
