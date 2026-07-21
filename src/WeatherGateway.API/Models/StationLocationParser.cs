@@ -1,3 +1,5 @@
+using Weather.Contracts;
+
 namespace WeatherGateway.API.Models;
 
 // Station ids are assigned by the physical devices as `<location>_<number>`

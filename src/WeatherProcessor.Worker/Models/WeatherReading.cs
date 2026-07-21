@@ -1,9 +1,0 @@
-namespace WeatherProcessor.Worker.Models;
-
-public record WeatherReading(
-    string StationId,
-    StationLocation Location,
-    double Temperature,
-    double Humidity,
-    double Pressure,
-    DateTimeOffset Timestamp);

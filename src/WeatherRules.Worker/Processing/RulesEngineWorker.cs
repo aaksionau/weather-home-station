@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Confluent.Kafka;
 using Microsoft.Extensions.Options;
+using Weather.Contracts;
 using WeatherRules.Worker.Configuration;
 using WeatherRules.Worker.Kafka;
 using WeatherRules.Worker.Metrics;

@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace WeatherProcessor.Worker.Models;
+namespace Weather.Contracts;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum StationLocation

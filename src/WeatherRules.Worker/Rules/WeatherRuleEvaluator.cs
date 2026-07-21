@@ -1,5 +1,6 @@
 using System.Text.Json;
 using RulesEngine.Models;
+using Weather.Contracts;
 using WeatherRules.Worker.Models;
 
 namespace WeatherRules.Worker.Rules;

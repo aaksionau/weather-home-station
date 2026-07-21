@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Confluent.Kafka;
 using Microsoft.Extensions.Options;
+using Weather.Contracts;
 using WeatherGateway.API.Kafka;
 using WeatherGateway.API.Metrics;
 using WeatherGateway.API.Models;

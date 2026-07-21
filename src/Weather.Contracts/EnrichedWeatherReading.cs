@@ -1,4 +1,4 @@
-namespace WeatherProcessor.Worker.Models;
+namespace Weather.Contracts;
 
 public record EnrichedWeatherReading(
     string StationId,

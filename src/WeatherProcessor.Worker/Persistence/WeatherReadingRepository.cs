@@ -1,8 +1,8 @@
 using Dapper;
 using Microsoft.Extensions.Options;
 using Npgsql;
+using Weather.Contracts;
 using WeatherProcessor.Worker.Configuration;
-using WeatherProcessor.Worker.Models;
 
 namespace WeatherProcessor.Worker.Persistence;
 

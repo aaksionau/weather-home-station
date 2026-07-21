@@ -25,4 +25,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Weather.Contracts\Weather.Contracts.csproj" />
+  </ItemGroup>
+
 </Project>

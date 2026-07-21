@@ -1,3 +1,4 @@
+using Weather.Contracts;
 using WeatherGateway.API.Models;
 
 namespace WeatherGateway.API.Services;

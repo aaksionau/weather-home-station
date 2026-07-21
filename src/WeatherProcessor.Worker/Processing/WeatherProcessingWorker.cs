@@ -2,11 +2,11 @@ using System.Diagnostics;
 using System.Text.Json;
 using Confluent.Kafka;
 using Microsoft.Extensions.Options;
+using Weather.Contracts;
 using WeatherProcessor.Worker.Configuration;
 using WeatherProcessor.Worker.Enrichment;
 using WeatherProcessor.Worker.Kafka;
 using WeatherProcessor.Worker.Metrics;
-using WeatherProcessor.Worker.Models;
 using WeatherProcessor.Worker.Persistence;
 
 namespace WeatherProcessor.Worker.Processing;
@@ -56,7 +56,7 @@ public class WeatherProcessingWorker : BackgroundService
         while (!stoppingToken.IsCancellationRequested)
         {
             ConsumeResult<string, string>? consumeResult = null;
-            WeatherReading? reading = null;
+            WeatherReadingEvent? reading = null;
             string? correlationId = null;
             try
             {
@@ -69,7 +69,7 @@ public class WeatherProcessingWorker : BackgroundService
                 correlationId = CorrelationIdHeader.TryGet(consumeResult.Message.Headers) ?? Guid.NewGuid().ToString();
                 var stopwatch = Stopwatch.StartNew();
 
-                reading = JsonSerializer.Deserialize<WeatherReading>(consumeResult.Message.Value)
+                reading = JsonSerializer.Deserialize<WeatherReadingEvent>(consumeResult.Message.Value)
                     ?? throw new InvalidOperationException("Received an empty weather reading.");
 
                 var enriched = _calculator.Enrich(reading);

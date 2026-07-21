@@ -24,7 +24,8 @@ services:
 
   api:
     build:
-      context: ./src/WeatherGateway.API
+      context: .
+      dockerfile: src/WeatherGateway.API/Dockerfile
     container_name: weather-api
     restart: unless-stopped
     ports:
@@ -76,7 +77,8 @@ services:
 
   processor:
     build:
-      context: ./src/WeatherProcessor.Worker
+      context: .
+      dockerfile: src/WeatherProcessor.Worker/Dockerfile
     container_name: weather-processor
     restart: unless-stopped
     environment:
@@ -96,7 +98,8 @@ services:
 
   rules-engine:
     build:
-      context: ./src/WeatherRules.Worker
+      context: .
+      dockerfile: src/WeatherRules.Worker/Dockerfile
     container_name: weather-rules-engine
     restart: unless-stopped
     environment:

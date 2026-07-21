@@ -1,4 +1,4 @@
-namespace WeatherGateway.API.Models;
+namespace Weather.Contracts;
 
 public record WeatherReadingEvent(
     string StationId,
