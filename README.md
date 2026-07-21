@@ -73,7 +73,7 @@ cross-cutting reader.
 
 ## Current Status
 
-Four pieces of this diagram exist today (see `src/` and
+Five pieces of this diagram exist today (see `src/` and
 `docker-compose.yml`):
 
 - **WeatherGateway.API** — accepts readings, publishes to `weather.raw`.
@@ -93,6 +93,14 @@ Four pieces of this diagram exist today (see `src/` and
   `GET /api/alerts`). No Kafka dependency and no writes, per the target
   design. Doesn't read `forecasts` yet (Predictions Worker doesn't exist
   yet, so that table doesn't either).
+- **Dashboard.Web** — React + TypeScript (Vite) dashboard. Polls
+  Dashboard.API every 30 seconds for the latest reading per station (two
+  stations, `inside`/`outside`, configured in `src/config/stations.ts`)
+  and for recent alerts. Mobile-friendly responsive layout. Served via
+  nginx in Docker, which reverse-proxies `/api/*` to `dashboard-api` so
+  the browser never needs CORS; the Vite dev server does the same via a
+  local proxy (`npm run dev`, defaults to `http://localhost:5185` for the
+  API).
 
 Predictions Worker and the Notification Worker are not built yet — the
 diagram above is the target design, not the current state.

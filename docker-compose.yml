@@ -129,6 +129,17 @@ services:
       timeout: 5s
       retries: 5
 
+  dashboard-web:
+    build:
+      context: ./src/Dashboard.Web
+    container_name: weather-dashboard-web
+    restart: unless-stopped
+    ports:
+      - "5190:80"
+    depends_on:
+      dashboard-api:
+        condition: service_healthy
+
 volumes:
   kafka-data:
   postgres-data:
