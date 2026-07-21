@@ -2,6 +2,7 @@ using System.Text.Json;
 using Confluent.Kafka;
 using Microsoft.Extensions.Options;
 using WeatherGateway.API.Kafka;
+using WeatherGateway.API.Metrics;
 using WeatherGateway.API.Models;
 
 namespace WeatherGateway.API.Services;
@@ -25,19 +26,23 @@ public class WeatherEventPublisher : IWeatherEventPublisher, IDisposable
         _producer = new ProducerBuilder<string, string>(config).Build();
     }
 
-    public async Task PublishAsync(WeatherReading reading, CancellationToken cancellationToken = default)
+    public async Task PublishAsync(WeatherReading reading, string correlationId, CancellationToken cancellationToken = default)
     {
         var message = new Message<string, string>
         {
             Key = reading.StationId,
-            Value = JsonSerializer.Serialize(reading)
+            Value = JsonSerializer.Serialize(reading),
+            Headers = new Headers()
         };
+        CorrelationIdHeader.Set(message.Headers, correlationId);
 
         var result = await _producer.ProduceAsync(_topic, message, cancellationToken);
 
+        WeatherGatewayMetrics.ReadingsPublished.Add(1, new KeyValuePair<string, object?>("station_id", reading.StationId));
+
         _logger.LogInformation(
-            "Published weather reading for station {StationId} to {Topic} [{Partition}] at offset {Offset}",
-            reading.StationId, result.Topic, result.Partition, result.Offset);
+            "Published weather reading for station {StationId} to {Topic} [{Partition}] at offset {Offset}, correlation {CorrelationId}",
+            reading.StationId, result.Topic, result.Partition, result.Offset, correlationId);
     }
 
     public void Dispose()

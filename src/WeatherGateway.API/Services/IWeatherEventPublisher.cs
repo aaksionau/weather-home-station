@@ -4,5 +4,5 @@ namespace WeatherGateway.API.Services;
 
 public interface IWeatherEventPublisher
 {
-    Task PublishAsync(WeatherReading reading, CancellationToken cancellationToken = default);
+    Task PublishAsync(WeatherReading reading, string correlationId, CancellationToken cancellationToken = default);
 }

@@ -3,6 +3,7 @@ using Confluent.Kafka;
 using Microsoft.Extensions.Options;
 using WeatherRules.Worker.Configuration;
 using WeatherRules.Worker.Kafka;
+using WeatherRules.Worker.Metrics;
 using WeatherRules.Worker.Models;
 using WeatherRules.Worker.Persistence;
 using WeatherRules.Worker.Rules;
@@ -67,6 +68,7 @@ public class RulesEngineWorker : BackgroundService
         {
             ConsumeResult<string, string>? consumeResult = null;
             EnrichedWeatherReading? reading = null;
+            string? correlationId = null;
             try
             {
                 consumeResult = _consumer.Consume(stoppingToken);
@@ -75,24 +77,36 @@ public class RulesEngineWorker : BackgroundService
                     continue;
                 }
 
+                correlationId = CorrelationIdHeader.TryGet(consumeResult.Message.Headers) ?? Guid.NewGuid().ToString();
+
                 reading = JsonSerializer.Deserialize<EnrichedWeatherReading>(consumeResult.Message.Value)
                     ?? throw new InvalidOperationException("Received an empty weather reading.");
 
                 var alerts = await evaluator.EvaluateAsync(reading, stoppingToken);
 
+                WeatherRulesMetrics.ReadingsEvaluated.Add(1, new KeyValuePair<string, object?>("station_id", reading.StationId));
+
                 foreach (var alert in alerts)
                 {
                     await _alertRepository.InsertAsync(alert, stoppingToken);
 
-                    await _producer.ProduceAsync(_kafkaOptions.AlertsTopic, new Message<string, string>
+                    var producedMessage = new Message<string, string>
                     {
                         Key = alert.StationId,
-                        Value = JsonSerializer.Serialize(alert)
-                    }, stoppingToken);
+                        Value = JsonSerializer.Serialize(alert),
+                        Headers = new Headers()
+                    };
+                    CorrelationIdHeader.Set(producedMessage.Headers, correlationId);
+
+                    await _producer.ProduceAsync(_kafkaOptions.AlertsTopic, producedMessage, stoppingToken);
+
+                    WeatherRulesMetrics.AlertsTriggered.Add(1,
+                        new KeyValuePair<string, object?>("station_id", alert.StationId),
+                        new KeyValuePair<string, object?>("severity", alert.Severity));
 
                     _logger.LogInformation(
-                        "Alert triggered for station {StationId}: {RuleName} ({Severity})",
-                        alert.StationId, alert.RuleName, alert.Severity);
+                        "Alert triggered for station {StationId}: {RuleName} ({Severity}), correlation {CorrelationId}",
+                        alert.StationId, alert.RuleName, alert.Severity, correlationId);
                 }
 
                 _consumer.Commit(consumeResult);
@@ -104,9 +118,10 @@ public class RulesEngineWorker : BackgroundService
             }
             catch (Exception ex)
             {
+                WeatherRulesMetrics.EvaluationFailures.Add(1);
                 _logger.LogError(ex,
-                    "Failed to evaluate rules for station {StationId} at {TopicPartitionOffset}",
-                    reading?.StationId, consumeResult?.TopicPartitionOffset);
+                    "Failed to evaluate rules for station {StationId} at {TopicPartitionOffset}, correlation {CorrelationId}",
+                    reading?.StationId, consumeResult?.TopicPartitionOffset, correlationId);
             }
         }
     }

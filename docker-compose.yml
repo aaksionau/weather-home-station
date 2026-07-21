@@ -33,6 +33,9 @@ services:
       ASPNETCORE_ENVIRONMENT: Production
       Kafka__BootstrapServers: kafka:29092
       Kafka__WeatherReadingsTopic: weather.raw
+      OTEL_SERVICE_NAME: weather-gateway-api
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
+      OTEL_METRIC_EXPORT_INTERVAL: "15000"
     depends_on:
       kafka:
         condition: service_healthy
@@ -82,6 +85,9 @@ services:
       Kafka__ProcessedTopic: weather.processed
       Kafka__ConsumerGroupId: weather-processor
       Postgres__ConnectionString: Host=postgres;Port=5432;Database=weather;Username=weather;Password=weather
+      OTEL_SERVICE_NAME: weather-processor-worker
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
+      OTEL_METRIC_EXPORT_INTERVAL: "15000"
     depends_on:
       kafka:
         condition: service_healthy
@@ -102,6 +108,9 @@ services:
       BlobStorage__ConnectionString: DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1;
       BlobStorage__ContainerName: rules
       BlobStorage__RulesBlobName: weather-alert-rules.json
+      OTEL_SERVICE_NAME: weather-rules-worker
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
+      OTEL_METRIC_EXPORT_INTERVAL: "15000"
     depends_on:
       kafka:
         condition: service_healthy
@@ -120,6 +129,9 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       Postgres__ConnectionString: Host=postgres;Port=5432;Database=weather;Username=weather;Password=weather
+      OTEL_SERVICE_NAME: weather-dashboard-api
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
+      OTEL_METRIC_EXPORT_INTERVAL: "15000"
     depends_on:
       postgres:
         condition: service_healthy
@@ -140,7 +152,52 @@ services:
       dashboard-api:
         condition: service_healthy
 
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.116.1
+    container_name: weather-otel-collector
+    restart: unless-stopped
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml
+    depends_on:
+      - loki
+
+  loki:
+    image: grafana/loki:3.2.0
+    container_name: weather-loki
+    restart: unless-stopped
+    volumes:
+      - loki-data:/loki
+
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    container_name: weather-prometheus
+    restart: unless-stopped
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    depends_on:
+      - otel-collector
+
+  grafana:
+    image: grafana/grafana:11.3.1
+    container_name: weather-grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+      - loki
+
 volumes:
   kafka-data:
   postgres-data:
   azurite-data:
+  loki-data:
+  prometheus-data:
+  grafana-data:
