@@ -7,7 +7,7 @@ using WeatherRules.Worker.Kafka;
 using WeatherRules.Worker.Metrics;
 using WeatherRules.Worker.Models;
 using WeatherRules.Worker.Persistence;
-using WeatherRules.Worker.Rules;
+using WeatherRules.Worker.Services;
 
 namespace WeatherRules.Worker.Processing;
 

@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Rules\DefaultRules\weather-alert-rules.json">
+    <None Include="weather-alert-rules.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

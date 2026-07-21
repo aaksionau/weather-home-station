@@ -4,12 +4,12 @@ using Microsoft.Extensions.Options;
 using RulesEngine.Models;
 using WeatherRules.Worker.Configuration;
 
-namespace WeatherRules.Worker.Rules;
+namespace WeatherRules.Worker.Persistence;
 
 public class RulesRepository
 {
     private static readonly string DefaultRulesPath =
-        Path.Combine(AppContext.BaseDirectory, "Rules", "DefaultRules", "weather-alert-rules.json");
+        Path.Combine(AppContext.BaseDirectory, "weather-alert-rules.json");
 
     private readonly BlobStorageOptions _options;
     private readonly ILogger<RulesRepository> _logger;

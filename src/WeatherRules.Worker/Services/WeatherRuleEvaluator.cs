@@ -3,7 +3,7 @@ using RulesEngine.Models;
 using Weather.Contracts;
 using WeatherRules.Worker.Models;
 
-namespace WeatherRules.Worker.Rules;
+namespace WeatherRules.Worker.Services;
 
 public class WeatherRuleEvaluator
 {

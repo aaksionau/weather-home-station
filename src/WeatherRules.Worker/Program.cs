@@ -4,7 +4,6 @@ using WeatherRules.Worker.Configuration;
 using WeatherRules.Worker.Metrics;
 using WeatherRules.Worker.Persistence;
 using WeatherRules.Worker.Processing;
-using WeatherRules.Worker.Rules;
 
 var builder = Host.CreateApplicationBuilder(args);
 
