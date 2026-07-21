@@ -58,6 +58,19 @@ services:
       timeout: 5s
       retries: 5
 
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite:latest
+    container_name: weather-azurite
+    restart: unless-stopped
+    command: "azurite-blob --blobHost 0.0.0.0 --blobPort 10000 --skipApiVersionCheck"
+    volumes:
+      - azurite-data:/data
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('net').connect(10000,'127.0.0.1').on('connect',()=>process.exit(0)).on('error',()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   processor:
     build:
       context: ./src/WeatherProcessor.Worker
@@ -75,6 +88,29 @@ services:
       postgres:
         condition: service_healthy
 
+  rules-engine:
+    build:
+      context: ./src/WeatherRules.Worker
+    container_name: weather-rules-engine
+    restart: unless-stopped
+    environment:
+      Kafka__BootstrapServers: kafka:29092
+      Kafka__ProcessedTopic: weather.processed
+      Kafka__AlertsTopic: weather.alerts
+      Kafka__ConsumerGroupId: weather-rules-engine
+      Postgres__ConnectionString: Host=postgres;Port=5432;Database=weather;Username=weather;Password=weather
+      BlobStorage__ConnectionString: DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1;
+      BlobStorage__ContainerName: rules
+      BlobStorage__RulesBlobName: weather-alert-rules.json
+    depends_on:
+      kafka:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      azurite:
+        condition: service_healthy
+
 volumes:
   kafka-data:
   postgres-data:
+  azurite-data:
