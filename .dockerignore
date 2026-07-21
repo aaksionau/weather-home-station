@@ -2,6 +2,8 @@
 **/obj/
 **/node_modules/
 **/dist/
+**/.vs/
+**/*.user
 .git/
 .github/
 .claude/
