@@ -1,0 +1,48 @@
+name: Build and push images
+
+on:
+  push:
+    branches: [main]
+
+env:
+  # The self-hosted runner shares the Docker daemon on the same host that
+  # runs the registry container, so it always reaches it over localhost
+  # regardless of the host's LAN IP.
+  REGISTRY_HOST: localhost:5000
+
+jobs:
+  build-and-push:
+    runs-on: self-hosted
+    strategy:
+      max-parallel: 1
+      matrix:
+        service:
+          - { name: weather-gateway-api, context: src/WeatherGateway.API }
+          - { name: weather-processor-worker, context: src/WeatherProcessor.Worker }
+          - { name: weather-rules-worker, context: src/WeatherRules.Worker }
+          - { name: dashboard-api, context: src/Dashboard.API }
+          - { name: dashboard-web, context: src/Dashboard.Web }
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build ${{ matrix.service.name }}
+        run: docker build -t "${REGISTRY_HOST}/weather/${{ matrix.service.name }}:${{ github.sha }}" "${{ matrix.service.context }}"
+
+      - name: Push ${{ matrix.service.name }}
+        run: docker push "${REGISTRY_HOST}/weather/${{ matrix.service.name }}:${{ github.sha }}"
+
+  summary:
+    needs: build-and-push
+    runs-on: self-hosted
+    steps:
+      - name: Print deploy command
+        run: |
+          {
+            echo "### Images pushed"
+            echo "Tag: \`${{ github.sha }}\`"
+            echo ""
+            echo "Deploy with:"
+            echo '```'
+            echo "cd terraform/02-platform && terraform apply -var=\"image_tag=${{ github.sha }}\""
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
