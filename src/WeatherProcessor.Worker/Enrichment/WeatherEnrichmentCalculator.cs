@@ -1,10 +1,10 @@
-using WeatherProcessor.Worker.Models;
+using Weather.Contracts.Types;
 
 namespace WeatherProcessor.Worker.Enrichment;
 
 public class WeatherEnrichmentCalculator
 {
-    public EnrichedWeatherReading Enrich(WeatherReading reading)
+    public EnrichedWeatherReading Enrich(WeatherReadingEvent reading)
     {
         var temperatureC = FahrenheitToCelsius(reading.Temperature);
 
@@ -15,6 +15,7 @@ public class WeatherEnrichmentCalculator
 
         return new EnrichedWeatherReading(
             reading.StationId,
+            reading.Location,
             reading.Temperature,
             reading.Humidity,
             reading.Pressure,

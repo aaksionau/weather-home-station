@@ -8,15 +8,8 @@ async function getJson<T>(path: string): Promise<T> {
   return (await response.json()) as T;
 }
 
-export function getLatestReading(stationId: string): Promise<WeatherReading | null> {
-  return getJson<WeatherReading | null>(
-    `/api/readings/${encodeURIComponent(stationId)}/latest`,
-  ).catch((error: Error) => {
-    if (error.message.includes("404")) {
-      return null;
-    }
-    throw error;
-  });
+export function getLatestReadings(): Promise<WeatherReading[]> {
+  return getJson<WeatherReading[]>("/api/readings/latest");
 }
 
 export function getRecentAlerts(limit = 25): Promise<Alert[]> {

@@ -1,12 +1,8 @@
 import { getRecentAlerts } from "../api/client";
-import { STATIONS } from "../config/stations";
+import { stationLabel } from "../config/stations";
 import { formatRelativeTime } from "../format";
 import { usePolling } from "../hooks/usePolling";
 import type { AlertSeverity } from "../api/types";
-
-function stationLabel(stationId: string): string {
-  return STATIONS.find((s) => s.id === stationId)?.label ?? stationId;
-}
 
 function severityClass(severity: AlertSeverity): string {
   return `badge badge--${severity.toLowerCase()}`;

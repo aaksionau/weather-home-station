@@ -20,9 +20,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Rules\DefaultRules\weather-alert-rules.json">
+    <None Include="weather-alert-rules.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Weather.Contracts\Weather.Contracts.csproj" />
+    <ProjectReference Include="..\Weather.Shared\Weather.Shared.csproj" />
   </ItemGroup>
 
 </Project>

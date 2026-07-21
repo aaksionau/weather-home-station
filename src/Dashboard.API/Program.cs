@@ -1,9 +1,9 @@
 using Dapper;
-using Dashboard.API.Configuration;
 using Dashboard.API.Helpers;
 using Dashboard.API.Persistence;
-using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
+using Weather.Contracts.Configuration;
+using Weather.Shared;
 
 SqlMapper.AddTypeHandler(new DateTimeOffsetTypeHandler());
 
@@ -19,24 +19,14 @@ builder.Services
 builder.Services.AddSingleton<WeatherReadingRepository>();
 builder.Services.AddSingleton<AlertRepository>();
 
-builder.Logging.AddOpenTelemetry(logging =>
-{
-    logging.IncludeFormattedMessage = true;
-    logging.IncludeScopes = true;
-    logging.AddOtlpExporter();
-});
-
-builder.Services.AddOpenTelemetry()
-    .WithMetrics(metrics => metrics
-        .AddAspNetCoreInstrumentation()
-        .AddRuntimeInstrumentation()
-        .AddView(
-            instrumentName: "http.server.request.duration",
-            new ExplicitBucketHistogramConfiguration
-            {
-                Boundaries = [0.005, 0.01, 0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1, 2.5, 5, 7.5, 10]
-            })
-        .AddOtlpExporter());
+builder.AddWeatherObservability(metrics => metrics
+    .AddAspNetCoreInstrumentation()
+    .AddView(
+        instrumentName: "http.server.request.duration",
+        new ExplicitBucketHistogramConfiguration
+        {
+            Boundaries = [0.005, 0.01, 0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1, 2.5, 5, 7.5, 10]
+        }));
 
 var app = builder.Build();
 
@@ -60,6 +50,15 @@ app.MapGet("/api/readings", async (
     return Results.Ok(readings);
 })
 .WithName("GetReadings");
+
+app.MapGet("/api/readings/latest", async (
+    WeatherReadingRepository repository,
+    CancellationToken cancellationToken) =>
+{
+    var readings = await repository.GetLatestPerStationAsync(cancellationToken);
+    return Results.Ok(readings);
+})
+.WithName("GetLatestReadingsPerStation");
 
 app.MapGet("/api/readings/{stationId}/latest", async (
     string stationId,

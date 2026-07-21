@@ -1,0 +1,97 @@
+[
+  {
+    "WorkflowName": "WeatherAlertRules",
+    "Rules": [
+      {
+        "RuleName": "HighTemperatureAlertOutside",
+        "RuleExpressionType": "LambdaExpression",
+        "Expression": "reading.Location == StationLocation.Outside && reading.Temperature >= 90",
+        "ErrorMessage": "Temperature is at or above 90F.",
+        "SuccessEvent": "HighTemperature",
+        "Properties": {
+          "Severity": "Warning"
+        }
+      },
+      {
+        "RuleName": "HighTemperatureAlertInside",
+        "RuleExpressionType": "LambdaExpression",
+        "Expression": "reading.Location == StationLocation.Inside && reading.Temperature >= 76",
+        "ErrorMessage": "Temperature is at or above 76F.",
+        "SuccessEvent": "HighTemperature",
+        "Properties": {
+          "Severity": "Warning"
+        }
+      },
+      {
+        "RuleName": "FreezingTemperatureAlertOutside",
+        "RuleExpressionType": "LambdaExpression",
+        "Expression": "reading.Location == StationLocation.Outside && reading.Temperature <= 32",
+        "ErrorMessage": "Temperature is at or below 32F (freezing).",
+        "SuccessEvent": "FreezingTemperature",
+        "Properties": {
+          "Severity": "Warning"
+        }
+      },
+      {
+        "RuleName": "FreezingTemperatureAlertInside",
+        "RuleExpressionType": "LambdaExpression",
+        "Expression": "reading.Location == StationLocation.Inside && reading.Temperature <= 45",
+        "ErrorMessage": "Indoor temperature is at or below 45F, indicating possible heating failure or burst-pipe risk.",
+        "SuccessEvent": "FreezingTemperature",
+        "Properties": {
+          "Severity": "Critical"
+        }
+      },
+      {
+        "RuleName": "HeatIndexDangerAlertOutside",
+        "RuleExpressionType": "LambdaExpression",
+        "Expression": "reading.Location == StationLocation.Outside && reading.HeatIndex >= 103",
+        "ErrorMessage": "Heat index is at or above 103F (NWS danger threshold).",
+        "SuccessEvent": "HeatIndexDanger",
+        "Properties": {
+          "Severity": "Critical"
+        }
+      },
+      {
+        "RuleName": "HeatIndexDangerAlertInside",
+        "RuleExpressionType": "LambdaExpression",
+        "Expression": "reading.Location == StationLocation.Inside && reading.HeatIndex >= 90",
+        "ErrorMessage": "Indoor heat index is at or above 90F, indicating possible AC failure.",
+        "SuccessEvent": "HeatIndexDanger",
+        "Properties": {
+          "Severity": "Critical"
+        }
+      },
+      {
+        "RuleName": "HighHumidityAlertOutside",
+        "RuleExpressionType": "LambdaExpression",
+        "Expression": "reading.Location == StationLocation.Outside && reading.Humidity >= 90",
+        "ErrorMessage": "Relative humidity is at or above 90%.",
+        "SuccessEvent": "HighHumidity",
+        "Properties": {
+          "Severity": "Info"
+        }
+      },
+      {
+        "RuleName": "HighHumidityAlertInside",
+        "RuleExpressionType": "LambdaExpression",
+        "Expression": "reading.Location == StationLocation.Inside && reading.Humidity >= 60",
+        "ErrorMessage": "Indoor relative humidity is at or above 60%, indicating a mold/moisture risk.",
+        "SuccessEvent": "HighHumidity",
+        "Properties": {
+          "Severity": "Warning"
+        }
+      },
+      {
+        "RuleName": "LowPressureAlert",
+        "RuleExpressionType": "LambdaExpression",
+        "Expression": "reading.Pressure <= 1000",
+        "ErrorMessage": "Barometric pressure has dropped to or below 1000 hPa, indicating possible stormy weather.",
+        "SuccessEvent": "LowPressure",
+        "Properties": {
+          "Severity": "Warning"
+        }
+      }
+    ]
+  }
+]

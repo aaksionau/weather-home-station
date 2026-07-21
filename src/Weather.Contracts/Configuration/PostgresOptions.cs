@@ -1,4 +1,4 @@
-namespace WeatherProcessor.Worker.Configuration;
+namespace Weather.Contracts.Configuration;
 
 public class PostgresOptions
 {

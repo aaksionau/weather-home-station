@@ -94,9 +94,11 @@ Five pieces of this diagram exist today (see `src/` and
   design. Doesn't read `forecasts` yet (Predictions Worker doesn't exist
   yet, so that table doesn't either).
 - **Dashboard.Web** — React + TypeScript (Vite) dashboard. Polls
-  Dashboard.API every 30 seconds for the latest reading per station (two
-  stations, `inside`/`outside`, configured in `src/config/stations.ts`)
-  and for recent alerts. Mobile-friendly responsive layout. Served via
+  Dashboard.API every 30 seconds via `GET /api/readings/latest`, which
+  returns the latest reading per distinct `station_id` — stations are
+  discovered dynamically, so any number of `inside_NN`/`outside_NN`
+  devices can report in without a config change. Also polls for recent
+  alerts. Mobile-friendly responsive layout. Served via
   nginx in Docker, which reverse-proxies `/api/*` to `dashboard-api` so
   the browser never needs CORS; the Vite dev server does the same via a
   local proxy (`npm run dev`, defaults to `http://localhost:5185` for the

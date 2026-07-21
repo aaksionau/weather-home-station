@@ -17,16 +17,16 @@ jobs:
       max-parallel: 1
       matrix:
         service:
-          - { name: weather-gateway-api, context: src/WeatherGateway.API }
-          - { name: weather-processor-worker, context: src/WeatherProcessor.Worker }
-          - { name: weather-rules-worker, context: src/WeatherRules.Worker }
-          - { name: dashboard-api, context: src/Dashboard.API }
-          - { name: dashboard-web, context: src/Dashboard.Web }
+          - { name: weather-gateway-api, context: ., dockerfile: src/WeatherGateway.API/Dockerfile }
+          - { name: weather-processor-worker, context: ., dockerfile: src/WeatherProcessor.Worker/Dockerfile }
+          - { name: weather-rules-worker, context: ., dockerfile: src/WeatherRules.Worker/Dockerfile }
+          - { name: dashboard-api, context: ., dockerfile: src/Dashboard.API/Dockerfile }
+          - { name: dashboard-web, context: src/Dashboard.Web, dockerfile: src/Dashboard.Web/Dockerfile }
     steps:
       - uses: actions/checkout@v4
 
       - name: Build ${{ matrix.service.name }}
-        run: docker build -t "${REGISTRY_HOST}/weather/${{ matrix.service.name }}:${{ github.sha }}" "${{ matrix.service.context }}"
+        run: docker build -f "${{ matrix.service.dockerfile }}" -t "${REGISTRY_HOST}/weather/${{ matrix.service.name }}:${{ github.sha }}" "${{ matrix.service.context }}"
 
       - name: Push ${{ matrix.service.name }}
         run: docker push "${REGISTRY_HOST}/weather/${{ matrix.service.name }}:${{ github.sha }}"

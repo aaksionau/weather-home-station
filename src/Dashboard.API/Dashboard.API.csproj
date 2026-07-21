@@ -16,4 +16,9 @@
     <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.16.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Weather.Contracts\Weather.Contracts.csproj" />
+    <ProjectReference Include="..\Weather.Shared\Weather.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

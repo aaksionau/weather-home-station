@@ -1,12 +1,13 @@
 using System.Text.Json;
 using Confluent.Kafka;
 using Microsoft.Extensions.Options;
+using Weather.Contracts.Kafka;
+using Weather.Contracts.Types;
 using WeatherRules.Worker.Configuration;
-using WeatherRules.Worker.Kafka;
 using WeatherRules.Worker.Metrics;
 using WeatherRules.Worker.Models;
 using WeatherRules.Worker.Persistence;
-using WeatherRules.Worker.Rules;
+using WeatherRules.Worker.Services;
 
 namespace WeatherRules.Worker.Processing;
 
@@ -30,8 +31,8 @@ public class RulesEngineWorker : BackgroundService
         _alertRepository = alertRepository;
         _logger = logger;
 
-        _consumer = KafkaClientFactory.CreateConsumer(_kafkaOptions);
-        _producer = KafkaClientFactory.CreateProducer(_kafkaOptions);
+        _consumer = KafkaClientFactory.CreateConsumer(_kafkaOptions.BootstrapServers, _kafkaOptions.ConsumerGroupId);
+        _producer = KafkaClientFactory.CreateProducer(_kafkaOptions.BootstrapServers);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)

@@ -10,6 +10,10 @@ GET {{Dashboard.API_HostAddress}}/api/readings/backyard-01/latest
 
 ###
 
+GET {{Dashboard.API_HostAddress}}/api/readings/latest
+
+###
+
 GET {{Dashboard.API_HostAddress}}/api/alerts?stationId=backyard-01&limit=20
 
 ###
