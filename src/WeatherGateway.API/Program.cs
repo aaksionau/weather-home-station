@@ -1,6 +1,6 @@
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
-using WeatherGateway.API.Kafka;
+using WeatherGateway.API.Configuration;
 using WeatherGateway.API.Metrics;
 using WeatherGateway.API.Models;
 using WeatherGateway.API.Services;

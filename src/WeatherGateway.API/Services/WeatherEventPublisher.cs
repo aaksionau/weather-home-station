@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 using Weather.Contracts.Enums;
 using Weather.Contracts.Kafka;
 using Weather.Contracts.Types;
-using WeatherGateway.API.Kafka;
+using WeatherGateway.API.Configuration;
 using WeatherGateway.API.Metrics;
 using WeatherGateway.API.Models;
 

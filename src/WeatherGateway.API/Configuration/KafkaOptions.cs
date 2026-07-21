@@ -1,4 +1,4 @@
-namespace WeatherGateway.API.Kafka;
+namespace WeatherGateway.API.Configuration;
 
 public class KafkaOptions
 {
