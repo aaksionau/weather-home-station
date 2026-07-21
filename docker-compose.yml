@@ -110,6 +110,25 @@ services:
       azurite:
         condition: service_healthy
 
+  dashboard-api:
+    build:
+      context: ./src/Dashboard.API
+    container_name: weather-dashboard-api
+    restart: unless-stopped
+    ports:
+      - "5185:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      Postgres__ConnectionString: Host=postgres;Port=5432;Database=weather;Username=weather;Password=weather
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 volumes:
   kafka-data:
   postgres-data:
