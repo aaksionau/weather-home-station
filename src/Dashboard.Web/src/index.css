@@ -1,0 +1,253 @@
+:root {
+  color-scheme: dark;
+  --bg: #0f172a;
+  --surface: #1a2437;
+  --surface-raised: #212d45;
+  --border: #2c3958;
+  --text: #e7ecf7;
+  --text-muted: #94a3c4;
+  --accent: #5eb0ff;
+  --ok: #34d399;
+  --info: #5eb0ff;
+  --warning: #f5b942;
+  --critical: #f6675b;
+
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  line-height: 1.4;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.app {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.app__header {
+  padding: 1.25rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.app__header h1 {
+  margin: 0;
+  font-size: clamp(1.25rem, 4vw, 1.75rem);
+}
+
+.app__main {
+  flex: 1;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.station-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.station-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+}
+
+.station-card--stale {
+  border-color: var(--warning);
+}
+
+.station-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.station-card__header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.status-dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: var(--ok);
+}
+
+.status-dot--offline {
+  background: var(--text-muted);
+}
+
+.station-card__primary {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin: 0.5rem 0 1rem;
+}
+
+.station-card__temp {
+  font-size: clamp(2rem, 8vw, 2.75rem);
+  font-weight: 600;
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.metric-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  background: var(--surface-raised);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+}
+
+.metric-tile__label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.metric-tile__value {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.metric-tile__unit {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-left: 0.2rem;
+}
+
+.station-card__updated,
+.station-card__polled {
+  margin: 0.5rem 0 0;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.station-card__polled {
+  margin-top: 0.15rem;
+}
+
+.station-card__hint {
+  color: var(--text-muted);
+  margin: 0.5rem 0 0;
+}
+
+.station-card__hint--error {
+  color: var(--critical);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  height: fit-content;
+}
+
+.badge--stale {
+  background: color-mix(in srgb, var(--warning) 20%, transparent);
+  color: var(--warning);
+}
+
+.badge--info {
+  background: color-mix(in srgb, var(--info) 20%, transparent);
+  color: var(--info);
+}
+
+.badge--warning {
+  background: color-mix(in srgb, var(--warning) 20%, transparent);
+  color: var(--warning);
+}
+
+.badge--critical {
+  background: color-mix(in srgb, var(--critical) 20%, transparent);
+  color: var(--critical);
+}
+
+.alerts-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem 1.25rem;
+}
+
+.alerts-panel h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+}
+
+.alerts-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.alerts-list__item {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.6rem 0;
+  border-top: 1px solid var(--border);
+}
+
+.alerts-list__item:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.alerts-list__body {
+  min-width: 0;
+}
+
+.alerts-list__message {
+  margin: 0;
+  font-size: 0.9rem;
+  word-break: break-word;
+}
+
+.alerts-list__meta {
+  margin: 0.15rem 0 0;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+@media (min-width: 640px) {
+  .app__main {
+    padding: 1.5rem;
+  }
+}
