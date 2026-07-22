@@ -1,0 +1,17 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Dashboard.API/Dashboard.API.csproj" />
+    <Project Path="src/Weather.Contracts/Weather.Contracts.csproj" />
+    <Project Path="src/Weather.Shared/Weather.Shared.csproj" />
+    <Project Path="src/WeatherGateway.API/WeatherGateway.API.csproj" />
+    <Project Path="src/WeatherProcessor.Worker/WeatherProcessor.Worker.csproj" />
+    <Project Path="src/WeatherRules.Worker/WeatherRules.Worker.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Dashboard.API.Tests/Dashboard.API.Tests.csproj" />
+    <Project Path="tests/Weather.Contracts.Tests/Weather.Contracts.Tests.csproj" />
+    <Project Path="tests/WeatherGateway.API.Tests/WeatherGateway.API.Tests.csproj" />
+    <Project Path="tests/WeatherProcessor.Worker.Tests/WeatherProcessor.Worker.Tests.csproj" />
+    <Project Path="tests/WeatherRules.Worker.Tests/WeatherRules.Worker.Tests.csproj" />
+  </Folder>
+</Solution>
